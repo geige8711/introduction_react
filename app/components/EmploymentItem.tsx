@@ -1,5 +1,4 @@
 import { EmploymentHistoryItem } from "../../_lib/employmentHistories";
-import { Skill } from "../../_lib/skills";
 
 export default function EmploymentItem({
   history,

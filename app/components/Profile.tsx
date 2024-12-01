@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FaGithub, FaLinkedin, FaMobile } from "react-icons/fa";
 import { IoLocation } from "react-icons/io5";
@@ -17,7 +18,7 @@ export default function Profile({
       } border border-gray-200 px-2 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 mb-10 lg:mb-0`}
     >
       <div className="h-24 relative">
-        <img
+        <Image
           src={"/me.jpg"}
           alt="me"
           className="w-24 h-24 rounded-full absolute -top-1/2 left-1/2 transform -translate-x-1/2"

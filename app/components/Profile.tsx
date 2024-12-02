@@ -19,6 +19,8 @@ export default function Profile({
     >
       <div className="h-24 relative">
         <Image
+          width={96}
+          height={96}
           src={"/me.jpg"}
           alt="me"
           className="w-24 h-24 rounded-full absolute -top-1/2 left-1/2 transform -translate-x-1/2"
@@ -26,7 +28,7 @@ export default function Profile({
       </div>
       <h2 className="text-center text-3xl font-bold">Edwald He</h2>
       <div className="flex flex-row justify-center">
-        <span className="text-center text-xl my-4 bg-gray-200 px-3 py-1 rounded-full">
+        <span className="text-center text-xl my-4 bg-gray-200 px-3 py-1 rounded-full dark:text-black">
           Fullstack Engineer
         </span>
       </div>

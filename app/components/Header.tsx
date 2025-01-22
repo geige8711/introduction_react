@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <>
       <div className="hidden lg:flex w-full h-10  flex-row justify-end">
-        <div className="w-2/3 h-full bg-orange-600 rounded-lg grid grid-cols-4 place-items-center">
+        <div className="w-2/3 h-full bg-orange-600 rounded-lg grid grid-cols-5 place-items-center">
           <MenuItem title="About" linkTo="/" isActive={pathname === "/"} />
           <MenuItem
             title="Resume"
@@ -25,6 +25,11 @@ export default function Header() {
             title="Portfolio"
             linkTo="/portfolio"
             isActive={pathname === "/portfolio"}
+          />
+          <MenuItem
+            title="Blog"
+            linkTo="/blog"
+            isActive={pathname.includes("blog")}
           />
           <MenuItem
             title="Contact"

@@ -327,6 +327,13 @@
   dependencies:
     tslib "^2.4.0"
 
+"@szhsin/react-accordion@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@szhsin/react-accordion/-/react-accordion-1.4.0.tgz#cbd2feda8999363428d7c1eaebcde4fdc53afd07"
+  integrity sha512-8wMTtyTIwP2BUVt+g5PgIs64bBP+NJte/T2wP8JKl4GW7leSo27a+jjqktWXzPEpRr5BM/FyGR2hVzLXX3bZBA==
+  dependencies:
+    react-transition-state "^2.2.0"
+
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
@@ -454,6 +461,11 @@ acorn@^8.9.0:
   version "8.14.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
   integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
+
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==
 
 ajv@^6.12.4:
   version "6.12.6"
@@ -2234,6 +2246,11 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-transition-state@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-transition-state/-/react-transition-state-2.2.0.tgz#3a9f37c0553a865b6110ae8eaf7ed4db22633577"
+  integrity sha512-D3EyLku1Sdxrxq26Fo4Jh0q1BLEFQfDOxKKiSuyqWH84+hM6y0Guc0hcW2IXMXY5l5gQCgkOQ9y90xx6mNoj5w==
+
 react@19.0.0-rc-66855b96-20241106:
   version "19.0.0-rc-66855b96-20241106"
   resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-rc-66855b96-20241106.tgz#f04d7283454a32bdd8e9757db4308b75b9739e56"
@@ -2868,6 +2885,11 @@ yaml@^2.3.4:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.6.1.tgz#42f2b1ba89203f374609572d5349fb8686500773"
   integrity sha512-7r0XPzioN/Q9kXBro/XPnA6kznR73DHq+GXh5ON7ZozRO6aMjbmiBuKste2wslTFkC5d1dw0GooOCepZXJ2SAg==
+
+yarn@^1.22.22:
+  version "1.22.22"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.22.tgz#ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  integrity sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==
 
 yocto-queue@^0.1.0:
   version "0.1.0"

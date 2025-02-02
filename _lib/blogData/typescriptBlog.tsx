@@ -67,4 +67,30 @@ export const typescript: BlogQuestionItem[] = [
     ),
     r: "https://www.turing.com/interview-questions/typescript",
   },
+  {
+    q: "What is TypeScript and how is it different from JavaScript?",
+    a: (
+      <p>
+        "TypeScript is an open-source programming language developed and
+        maintained by Microsoft. It is a superset of JavaScript, which means it
+        includes all JavaScript features and adds additional features such as
+        static types, classes, and interfaces."
+      </p>
+    ),
+    r: "https://codewithpawan.medium.com/typescript-interview-questions-from-beginners-to-advanced-part-1-b749513faab0",
+  },
+  {
+    q: "How do you install TypeScript?",
+    a: (
+      <div className="flex flex-col">
+        <div>
+          TypeScript can be installed globally using npm (Node Package Manager)
+          with the following command:
+        </div>
+        <code>npm install -g typescript</code>
+        <code>tsc -v</code>
+      </div>
+    ),
+    r: "https://codewithpawan.medium.com/typescript-interview-questions-from-beginners-to-advanced-part-1-b749513faab0",
+  },
 ];

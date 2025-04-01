@@ -256,6 +256,52 @@ export const angular: BlogQuestionItem[] = [
                         enteredTitle =  signal('');
                     }
                 `}
+                <p>
+                    3. combination of Input and Output, variable name must be
+                    same, and Output variable name wiht Change ending.
+                </p>
+                {`
+                    import { Output, Input } from '@angular/core';
+
+                    @Component({
+                        selector: 'app-user',
+                        templateUrl: './user.component.html',
+                        imports: []
+                    })
+                    export class UserComponent {
+                        @Input({ required: true }) size!: {width: string; height: string};
+                        @Output() sizeChange = new EventEmitter<{width: string; height: string}>();
+
+                        onReset() {
+                            this.sizeChange.emit({
+                                width: '200',
+                                height: '100'
+                            });
+                        }
+                    }
+                `}
+                <p>4. using model after Angular 17.2.</p>
+                {`
+                    import { model } from '@angular/core';
+
+                    @Component({
+                        selector: 'app-user',
+                        templateUrl: './user.component.html',
+                        imports: []
+                    })
+                    export class UserComponent {
+                        @Input({ required: true }) size!: {width: string; height: string};
+                        @Output() sizeChange = new EventEmitter<{width: string; height: string}>();
+                        size = model.required<{width: string; height: string}>();
+
+                        onReset() {
+                            this.size.set({
+                                width: '200',
+                                height: '100'
+                            });
+                        }
+                    }
+                `}
             </div>
         ),
         r: "self summary",
@@ -503,60 +549,6 @@ export const angular: BlogQuestionItem[] = [
         r: "self summary",
     },
     {
-        q: "how to pass data from child component to parent component",
-        a: (
-            <div>
-                <p>
-                    1. using @Output decorator.
-                    {`
-                    import { Output, EventEmitter } from '@angular/core';
-
-                    @Component({
-                        selector: 'app-user',
-                        templateUrl: './user.component.html',
-                    })
-                    export class UserComponent {
-                        @Output() select = new EventEmitter<string>();
-
-                        onClick(){
-                            this.select.emit("id");
-                        }
-                    }
-                    `}
-                    <br /> then, it can be used in the parent html template:
-                    {`
-                    <app-user (select)="onSelectUser($event)"/>
-                    `}
-                    $event holds the value that is from child
-                </p>
-                <p>
-                    2. using output
-                    {`
-                    import { output } from '@angular/core';
-
-                    @Component({
-                        selector: 'app-user',
-                        templateUrl: './user.component.html',
-                    })
-                    export class UserComponent {
-                        select = output<string>();
-
-                        onClick(){
-                            this.select.emit("id");
-                        }
-                    }
-                    `}
-                    <br /> then, it can be used in the parent html template:
-                    {`
-                    <app-user (select)="onSelectUser($event)"/>
-                    `}
-                    $event holds the value that is from child
-                </p>
-            </div>
-        ),
-        r: "self summary",
-    },
-    {
         q: "how to loop a list",
         a: (
             <div>
@@ -566,7 +558,14 @@ export const angular: BlogQuestionItem[] = [
                     @for (user of users; track user.id) {
                         <li>
                             <app-user [user]="user" (select)="onSelectUser($event)"/>
+                            {{ $first }} to check if element is first or not
+                            {{ $last }} to check if element is last or not
+                            {{ $odd }} to check if element is odd or not
+                            {{ $even }} to check if element is even or not
+                            {{ $count }} is total count of items for users array
                         </li>
+                    } @empty {
+                        <p>No Users if users is empty array, will fallback to @empty</p>
                     }
                     `}
                 </p>
@@ -682,6 +681,35 @@ export const angular: BlogQuestionItem[] = [
                     }
                     `}
                 </p>
+                <p>
+                    3. bind class:
+                    {`
+                    <nav [class]="{ 'bg-amber-50': isActive }"></nav>
+                    `}
+                </p>
+                <p>
+                    there is no difference between binding [class] and [ngClass]
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to add inline style dynamically",
+        a: (
+            <div>
+                <p>
+                    1. bind single attribute of style:
+                    {`
+                    <button [style.height]="selected ? '0px' : '10px'">Submit</button>
+                    `}
+                </p>
+                <p>
+                    2. bind multiple style attributes:
+                    {`
+                    <nav [style]="{ fontSize: isActive ? '20px' : '30px' }"></nav>
+                    `}
+                </p>
             </div>
         ),
         r: "self summary",
@@ -734,6 +762,571 @@ export const angular: BlogQuestionItem[] = [
                     })
                     export class UserComponent {
                         private tasksService = inject(TasksService)
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to use ng-content in multiple slots",
+        a: (
+            <div>
+                <p>
+                    1. in the button html template, it can add class selector
+                    {`
+                    <span>
+                        <ng-content />
+                    </span>
+                    <ng-content select=".icon"/>
+                    `}
+                </p>
+                <p>
+                    in button component.ts file, add attribute selector:
+                    {`
+                    import { Component } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: []
+                    })
+                    export class ButtonComponent {
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    {`
+                    <button appButton>
+                        Submit
+                        <span class="icon">⌲</span>
+                    </button>
+                    `}
+                </p>
+                <p>
+                    2. use ngProjectAs
+                    {`
+                    <span>
+                        <ng-content />
+                    </span>
+                    <ng-content select="icon"/>
+                    `}
+                    {`
+                    <button appButton>
+                        Submit
+                        <span ngProjectAs="icon">⌲</span>
+                    </button>
+                    `}
+                </p>
+                <p>
+                    3. use ng-content wrap to give default content,if there is
+                    no html children:
+                    {`
+                        <ng-content>
+                            ⌲
+                        </ng-content>
+                    `}
+                </p>
+                <p>
+                    4. use ng-content to select multiple element
+                    {`
+                        <ng-content select="input, textarea" />
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to make style globally",
+        a: (
+            <div>
+                <p>
+                    set encapsulation as ViewEncapsulation.None:
+                    {`
+                    import { Component, ViewEncapsulation } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                        encapsulation: ViewEncapsulation.None
+                    })
+                    export class ButtonComponent {
+                        ...
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to add class to component",
+        a: (
+            <div>
+                <p>
+                    1. in the @Component decorator:
+                    {`
+                    import { Component, ViewEncapsulation } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                        host: {
+                            class: 'control'
+                        }
+                    })
+                    export class ButtonComponent {
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    2. use @HostBinding in the component class:
+                    {`
+                    import { Component, ViewEncapsulation } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent {
+                        @HostBinding('class') className = 'control';
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to add event listener to component",
+        a: (
+            <div>
+                <p>
+                    1. in the @Component decorator:
+                    {`
+                    import { Component, ViewEncapsulation } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                        host: {
+                            '(click)': ' onClick()'
+                        }
+                    })
+                    export class ButtonComponent {
+                        onClick(){
+                            console.log("Clicked");
+                        }
+                    }
+                    `}
+                </p>
+                <p>
+                    2. use @HostListener in the component class:
+                    {`
+                    import { Component, ViewEncapsulation } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent {
+                        @HostListener('click') onClick(){
+                            console.log("Clicked");
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to access component self programmatically",
+        a: (
+            <div>
+                <p>
+                    use ElementRef:
+                    {`
+                    import { Component, inject, ElementRef } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent {
+                        private el = inject(ElementRef);
+
+                        onClick(){
+                            console.log("this component ref:");
+                            console.log(this.el);
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "what is lifecycle method for Angular",
+        a: (
+            <div>
+                <p>
+                    ngOnChanges(), ngOnInit(), ngDoCheck(),
+                    ngAfterContentInit(), ngAfterContentChecked(),
+                    ngAfterViewInit(), ngAfterViewChecked(), ngOnDestroy()
+                </p>
+                <p>
+                    {`
+                    import { Component, inject, ElementRef } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements
+                        OnInit,
+                        OnChanges,
+                        DoCheck,
+                        AfterContentInit,
+                        AfterContentChecked,
+                        AfterViewInit,
+                        AfterViewChecked,
+                        OnDestroy
+                    {
+                        ngOnChanges(){
+                            ...
+                        }
+                        ngOnInit(){
+                            ...
+                        }
+                        ngDoCheck(){
+                            ...
+                        }
+                        ngAfterContentInit(){
+                            ...
+                        }
+                        ngAfterContentChecked(){
+                            ...
+                        }
+                        ngAfterViewInit(){
+                            ...
+                        }
+                        ngAfterViewChecked(){
+                            ...
+                        }
+                        ngOnDestroy(){
+                            ...
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to use DestroyRef",
+        a: (
+            <div>
+                <p>
+                    Angular 16 introduces DestroyRef, which is similar to
+                    lifecycle function ngOnDestroy
+                </p>
+                <p>
+                    {`
+                    import { Component, inject, DestroyRef } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements OnInit, OnDestroy {
+                        private destroyRef = inject(DestroyRef)
+                        ngOnInit() {
+                            const interval = setInterval(()=>{
+                                ...
+                            }, 5000);
+                            this.destroyRef.onDestroy(()=>{
+                                clearInterval(interval);
+                            });
+                        }
+                        ngOnDestroy(){
+                            ...
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to define template variables to access component or html element",
+        a: (
+            <div>
+                <p>
+                    {`
+                    <form (ngSubmit)="onSubmit(titleInput.value)">
+                        <input #titleInput />
+                        <app-control #ctl />
+                    </form>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to access template variables in component class",
+        a: (
+            <div>
+                <p>1. first define a template variable form</p>
+                <p>
+                    {`
+                    <form (ngSubmit)="onSubmit(titleInput.value)" #form>
+                        <input #titleInput />
+                        <app-control #ctl />
+                    </form>
+                    `}
+                </p>
+                <p>2. using ViewChild</p>
+                <p>
+                    {`
+                    import { Component, inject, ElementRef } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements AfterViewInit{
+                        // also can be a class component, for example, @ViewChild(ButtonComponent)
+                        @ViewChild('form') form?: ElementRef<HTMLFormElement>;
+                        onSubmit(title: string){
+                            this.form?.nativeElement.reset();
+                        }
+
+                        ngAfterViewInit(){
+                            // this method will ensure we can access ViewChild variable form
+                        }
+                    }
+                    `}
+                </p>
+                <p>after Angular 17.3, we can use viewChild function</p>
+                <p>
+                    {`
+                    import { Component, viewChild } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements AfterViewInit{
+                        private form = viewChild.required<ElementRef<HTMLFormElement>>('form');
+                        onSubmit(title: string){
+                            this.form().nativeElement.reset();
+                        }
+
+                        ngAfterViewInit(){
+                            // this method will ensure we can access ViewChild variable form
+                        }
+                    }
+                    `}
+                </p>
+                <p>
+                    Similarly, we can use @ViewChildren or viewChildren to
+                    access multiple elements or components
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to access elements inside <ng-content />",
+        a: (
+            <div>
+                <p>
+                    1. first define a template variable input in the parent
+                    component html template:
+                </p>
+                <p>
+                    {`
+                    <app-control label="Title">
+                        <input #input/>
+                    </app-control>
+                    `}
+                </p>
+                <p>in control.component.html:</p>
+                <p>
+                    {`
+                    <label>{{ label() }}</label>
+                    <ng-content select="input, textarea" />
+                    `}
+                </p>
+                <p>2. using ContentChild</p>
+                <p>
+                    {`
+                    import { Component, inject, ElementRef } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ControlComponent implements AfterContentInit{
+                        // also can be a class component, for example, @ViewChild(ButtonComponent)
+                        @ContentChild('input') control?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+                        onSubmit(title: string){
+                            this.form?.nativeElement.reset();
+                        }
+
+                        ngAfterContentInit() {
+                            // this method will ensure we can access ContentChild variable control
+                        }
+                    }
+                    `}
+                </p>
+                <p>after Angular 17.3, we can use contentChild function</p>
+                <p>
+                    {`
+                    import { Component, contentChild } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements AfterContentInit{
+                        private control = contentChild<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('input');
+                        onSubmit(title: string){
+                            console.log(this.control());
+                        }
+
+                        ngAfterContentInit() {
+                            // this method will ensure we can access ContentChild variable control
+                        }
+                    }
+                    `}
+                </p>
+                <p>
+                    Similarly, we can use @ContentChildren or contentChildren to
+                    access multiple elements or components
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to detect any changes for entire angular app",
+        a: (
+            <div>
+                <p>we can use afterRender and afterNextRender</p>
+                <p>
+                    availabe after Angular 16:
+                    {`
+                    import { Component, afterRender, afterNextRender } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ControlComponent{
+                        constructor() {
+                            afterRender(()=>{
+                                ...
+                            });
+
+                            afterNextRender(()=>{
+                                ...
+                            });
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to listen the signal value change",
+        a: (
+            <div>
+                <p>we can effect function in component constructor</p>
+                <p>
+                    {`
+                    import { Component, effect } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ControlComponent{
+                        currentStatus = signal<string>('');
+                        constructor() {
+                            effect(()=>{
+                                console.log(this.currentStatus());
+                            });
+                        }
+                    }
+                    `}
+                </p>
+                <p>
+                    It does provide you with an onCleanup hook which you can
+                    execute as part of your effect function to define what
+                    should happen before the effect code runs the next time:
+                </p>
+                <p>
+                    {`
+                    effect((onCleanup) => {
+                        const tasks = getTasks();
+                        const timer = setTimeout(() => {
+                            ...
+                        }, 1000);
+
+                        onCleanup(() => {
+                            clearTimeout(timer);
+                        });
+                    });
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to access signal previous value",
+        a: (
+            <div>
+                <p>
+                    {`
+                    import { Component } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ControlComponent{
+                        currentStatus = signal<boolean>(false);
+                        onToggle(){
+                            this.currentStatus.update(o=>!o);
+                        }
                     }
                     `}
                 </p>

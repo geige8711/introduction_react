@@ -290,8 +290,6 @@ export const angular: BlogQuestionItem[] = [
                         imports: []
                     })
                     export class UserComponent {
-                        @Input({ required: true }) size!: {width: string; height: string};
-                        @Output() sizeChange = new EventEmitter<{width: string; height: string}>();
                         size = model.required<{width: string; height: string}>();
 
                         onReset() {
@@ -370,14 +368,14 @@ export const angular: BlogQuestionItem[] = [
                 <p>
                     2. use computed and signal together
                     {`
-                    import { signal, computed} from '@angular/core';
+                    import { computed, input} from '@angular/core';
                     @Component({
                         selector: 'app-user',
                         templateUrl: './user.component.html',
                     })
                     export class UserComponent {
-                        selectedUser = DUMMY_USERS[randomIndex];
-                        imagePath = computed(()=>'assets/users/' + this.selectedUser().avatar)
+                        avatar = input.required<string>();
+                        imagePath = computed(()=>'assets/users/' + this.avatar())
                     }
                     `}
                     then this computed property is also a signal, need to be
@@ -572,7 +570,7 @@ export const angular: BlogQuestionItem[] = [
                 <p>
                     2. using ngFor
                     {`
-                    <li *ngFor="let user of users; ; index as i">
+                    <li *ngFor="let user of users; index as i">
                         <app-user [user]="user" (select)="onSelectUser($event)"/>
                     </li>
                     `}
@@ -988,7 +986,7 @@ export const angular: BlogQuestionItem[] = [
                 </p>
                 <p>
                     {`
-                    import { Component, inject, ElementRef } from '@angular/core';
+                    import { Component } from '@angular/core';
 
                     @Component({
                         selector: 'button[appButton], a[appButton]',
@@ -1266,7 +1264,7 @@ export const angular: BlogQuestionItem[] = [
         q: "how to listen the signal value change",
         a: (
             <div>
-                <p>we can effect function in component constructor</p>
+                <p>we can use effect function in component constructor</p>
                 <p>
                     {`
                     import { Component, effect } from '@angular/core';

@@ -1332,4 +1332,156 @@ export const angular: BlogQuestionItem[] = [
         ),
         r: "self summary",
     },
+    {
+        q: "how to use attribute directive",
+        a: (
+            <div>
+                <p>1.setup a directive</p>
+                <p>
+                    {`
+                    import { Directive, input, ElementRef } from '@angular/core';
+
+                    @Directive({
+                        selector: 'a[appSafeLink]',
+                        standalone: true,
+                        host: {
+                            '(click)': 'onConfirmLeavePage($event)',
+                        }
+                    })
+                    export class SafeLinkDirective{
+                        queryParam = input('myapp', { alias: 'appSafeLink'});
+                        private hostElementRef = inject<ElementRef<HTMLAnchorElement>>(ElementRef);
+
+                        onConfirmLeavePage(event: MouseEvent) {
+                            const wantsToLeave = window.confirm("Do you want to leave the app");
+
+                            if(wantsToLeave){
+                                const address = this.hostElementRef.nativeElement.href;
+                                this.hostElementRef.nativeElement.href = address + '?from='  + this.queryParam();
+                                return;
+                            }
+
+                            event.preventDefault();
+                        }
+                    }
+                    `}
+                </p>
+                <p>2. consumed in the component</p>
+                <p>
+                    need to import directive in the component.ts file:
+                    {`
+                    import { Component } from '@angular/core';
+
+                    @Component({
+                        selector: 'app-control',
+                        templateUrl: './user.component.html',
+                        imports: [SafeLinkDirective],
+                    })
+                    export class ControlComponent{
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    in the html template:
+                    {`
+                    <a href="https://angular.dev?from=myapp" appSafeLink="myapp-docs-link">Angular Document</a>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to use structural directive",
+        a: (
+            <div>
+                <p>1.setup a directive</p>
+                <p>
+                    {`
+                    import { Directive, TemplateRef, effect, inject, input, ViewContainerRef } from '@angular/core';
+
+                    export type Permission = 'admin' | 'user' | 'guest';
+
+                    @Directive({
+                        selector: '[appAuth]',
+                        standalone: true,
+                    })
+                    export class AuthDirective{
+                        userType = input.required<Permission>({ alias: 'appAuth'});
+                        private authService = inject(AuthService);
+                        private templateRef = inject(TemplateRef);
+                        private viewContainerRef = inject(ViewContainerRef);
+
+                        constructor() {
+                            effect(()=>{
+                                if(this.authService.activePermission()===this.userType()){
+                                    this.viewContainerRef.createEmbeddedView(this.templateRef);
+                                } else {
+                                    this.viewContainerRef.clear(); 
+                                }
+                            });
+                        }
+                    }
+                    `}
+                </p>
+                <p>2. consumed in the component</p>
+                <p>
+                    need to import directive in the component.ts file:
+                    {`
+                    import { Component } from '@angular/core';
+
+                    @Component({
+                        selector: 'app-control',
+                        templateUrl: './user.component.html',
+                        imports: [AuthDirective],
+                    })
+                    export class ControlComponent{
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    in the html template:
+                    {`
+                    <ng-tempate appAuth="admin">
+                        <p>Only admins should see this.</p>
+                    </ng-template>
+                    `}
+                    or we can use *appAuth
+                    {`
+                    <p *appAuth="'admin'">
+                        Only admins should see this!
+                    </p>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to combine two or more directive by using hostDirectives",
+        a: (
+            <div>
+                <p>1.setup a directive</p>
+                <p>
+                    {`
+                    import { Directive, TemplateRef, effect, inject, input, ViewContainerRef } from '@angular/core';
+
+                    export type Permission = 'admin' | 'user' | 'guest';
+
+                    @Directive({
+                        selector: '[appAuth]',
+                        standalone: true,
+                        hostDirectives: [LogDirective]
+                    })
+                    export class AuthDirective{
+                        ...
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
 ];

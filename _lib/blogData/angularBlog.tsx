@@ -561,6 +561,7 @@ export const angular: BlogQuestionItem[] = [
                             {{ $odd }} to check if element is odd or not
                             {{ $even }} to check if element is even or not
                             {{ $count }} is total count of items for users array
+                            {{ $index }} is element index
                         </li>
                     } @empty {
                         <p>No Users if users is empty array, will fallback to @empty</p>
@@ -1479,6 +1480,144 @@ export const angular: BlogQuestionItem[] = [
                         ...
                     }
                     `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to use pipe",
+        a: (
+            <div>
+                <p>1. import DatePipe</p>
+                <p>
+                    {`
+                    import { Component } from '@angular/core';
+                    import { DatePipe, DecimalPipe } from '@angular/common';
+
+
+                    @Component({
+                        selector: 'app-root',
+                        standalone: true,
+                        TemplateUrl: './app.component.html',
+                        imports: [DatePipe, DecimalPipe]
+                    })
+                    export class AppComponent{
+                        ...
+                    }
+                    `}
+                </p>
+                <p>2. consumed in html template</p>
+                <p>
+                    {`
+                    <p>{{ currentDate | date:'medium' }}</p>
+                    <p>{{ currentTemperature | number:'1.1-2' }}</p>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to build up custom pipe",
+        a: (
+            <div>
+                <p>1. create a file temperature.pipe.ts</p>
+                <p>
+                    {`
+                    import { Pipe, PipeTransform } from '@angular/core';
+
+                    @Pipe({
+                        name: 'temp',
+                        standalone: true
+                    })
+                    export class TemperaturePipe implements PipeTransform{
+                        transform(value: string | number, inputType: 'cel' | 'fah', outputType?: 'cel' | 'fah',){
+                        }
+                    }
+                    `}
+                </p>
+                <p>2. import TemperaturePipe</p>
+                <p>
+                    {`
+                    @Component({
+                        selector: 'app-root',
+                        standalone: true,
+                        TemplateUrl: './app.component.html',
+                        imports: [TemperaturePipe]
+                    })
+                    export class AppComponent{
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    3. consumed in html template, using : to seperate arguments
+                </p>
+                <p>
+                    {`
+                    <p>{{ currentTemperature | temp: 'cel' : 'fah' }}</p>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "there are 3 ways to inject service",
+        a: (
+            <div>
+                <p>
+                    1. provideIn: &apos;root&apos; registers an injectable
+                    thing(e.g. a service) with Application Root Environment
+                    Injector. Therefore, All components, directives, services
+                    etc, can request the value(e.g. an instance of this service)
+                </p>
+                <p>this is the most common way to setup service</p>
+                <p>
+                    {`
+                    import { Injectable } from '@angular/core';
+
+                    @Injectable({
+                        providedIn: 'root',
+                    })
+                    export class TasksService{
+                        ...
+                    }
+                    `}
+                </p>
+                <p>2. add service for whole application, in the main.ts:</p>
+                <p>
+                    {`
+                    import { bootstrapApplication } from '@angular/platform-browser';
+                    import { AppComponent } from './app/app.component';
+
+                    bootstrapApplication(
+                        AppComponent, { providers: [TasksService] }
+                    ).catch(err=>console.error(err));
+                    `}
+                </p>
+                <p>then this service is injectable</p>
+                <p>3. element injector:</p>
+                <p>
+                    {`
+                    import { Component } from '@angular/core;
+
+                    @Component({
+                        selector: 'app-tasks',
+                        standalone: true,
+                        templateUrl: './tasks.component.html',
+                        imports: [NewTaskComponent, TasksListComponent],
+                        providers: [TasksService]
+                    })
+                    export class TasksComponent {
+                        ...
+                    }
+                    `}
+                </p>
+                <p>
+                    this service is only availabe and injectable for all
+                    children components and TasksComponent self
                 </p>
             </div>
         ),

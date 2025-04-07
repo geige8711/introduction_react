@@ -1623,4 +1623,308 @@ export const angular: BlogQuestionItem[] = [
         ),
         r: "self summary",
     },
+    {
+        q: "how to set up custom dependency injection tokens and providers",
+        a: (
+            <div>
+                <p>1. inject a serice class</p>
+                <p>
+                    {`
+                    const TasksServiceToken = new InjectionToken<TasksService>('tasks-service-token');
+
+                    bootstrapApplication(
+                        AppComponent,
+                        {providers: [{provide: TasksServiceToken, useClass: TasksService}]}
+                    ).catch(err=>console.error(err));
+                    `}
+                </p>
+                <p>2. inject a value</p>
+                <p>
+                    {`
+                    import { bootstrapApplication } from '@angular/platform-browser';
+                    import { AppComponent } from './app/app.component';
+
+                    type Options = {
+                        value: 'open' | 'in-progress' | 'done';
+                        taskStatus: TaskStatus;
+                        text: string;
+                    }[];
+
+                    export const TASK_STATUS_OPTIONS = new InjectionToken<Options>('task-status-options');
+
+                    export const TaskStatusOptions: Options = [
+                        {
+                            value: 'open',
+                            taskStatus: 'OPEN',
+                            text: 'Open',
+                        },
+                        {
+                            value: 'done',
+                            taskStatus: 'DONE',
+                            text: 'Completed',
+                        }
+                    ];
+
+                    const taskStatusOptionsProvider: Provider = {
+                        provide: TASK_STATUS_OPTIONS,
+                        useValue: TaskStatusOptions
+                    };
+
+                    bootstrapApplication(
+                        AppComponent, { providers: [taskStatusOptionsProvider] }
+                    ).catch(err=>console.error(err));
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to avoid Zone Pollution",
+        a: (
+            <div>
+                <p>1. using NgZone injection</p>
+                <p>
+                    {`
+                    import { Component, NgZone } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                    })
+                    export class ButtonComponent implements OnInit{
+                        private zone = inject(NgZone);
+
+                        ngOnInit() {
+                            this.zone.runOutsideAngular(()=>{
+                                setTimeout(()=>{
+                                    console.log("Time expired!")
+                                },5000);
+                            });
+                        }
+                    }
+                    `}
+                </p>
+                <p>
+                    2. using OnPush Strategy, instructs Angular to run change
+                    detection for a component subtree only when: The root
+                    component of the subtree receives new inputs as the result
+                    of a template binding
+                </p>
+                <p>
+                    {`
+                    import { Component, NgZone, ChangeDetectionStrategy } from '@angular/core';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [],
+                        changeDetection: ChangeDetectionStrategy.OnPush
+                    })
+                    export class ButtonComponent implements OnInit{
+                        ...
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to use OnPush with objects",
+        a: (
+            <div>
+                <p>1. using signal</p>
+                <p>2. using AsyncPipe</p>
+                <p>in the service</p>
+                <p>
+                    {`
+                    import { Component, NgZone } from '@angular/core';
+                    import { AsyncPipe } from '@angular/common';
+
+                    @Injectable({
+                        providedIn: 'root',
+                    })
+                    export class ButtonComponent implements OnInit{
+                        messages$ = new BehaviorSubject<string[]>([]);
+                        private messages: string[] = [];
+
+                        addMessage(message: string) {
+                            this.messages = [...this.messages, message];
+                            this.messages$.next(this.messages);
+                        }
+                    }
+                    `}
+                </p>
+                <p>in the component.ts file:</p>
+                <p>
+                    {`
+                    import { Component, NgZone } from '@angular/core';
+                    import { AsyncPipe } from '@angular/common';
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                        imports: [AsyncPipe],
+                        changeDetection: ChangeDetectionStrategy.OnPush
+                    })
+                    export class ButtonComponent implements OnInit{
+                        private messagesService = inject(MessagesService);
+                        messages$ = this.messagesService.messages$;
+                    }
+                    `}
+                </p>
+                <p>in the html template file:</p>
+                <p>
+                    {`
+                    <ul>
+                        @for (message of messages$ | async; track message) {
+                            <li>{{ message }}</li>
+                        }
+                    </ul>
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to setup zoneless",
+        a: (
+            <div>
+                <p>1. remove zone.js in polyfills in angular.json</p>
+                <p>
+                    {`
+                        "polyfills": [ "zone.js" ],
+                    `}
+                </p>
+                <p>
+                    2. add provideExperimentalZonelessChangeDetection() in the
+                    providers array in the app.config.ts
+                </p>
+                <p>
+                    {`
+                    import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+
+                        bootstrapApplication(AppComponent, {
+                            providers: [provideExperimentalZonelessChangeDetection()]
+                        }).catch(err=>console.error(err));
+                    `}
+                </p>
+                <p>3. use signal in the whole application</p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "what are observables and signals for",
+        a: (
+            <div>
+                <p>
+                    Observables: Great for managing events & streamed data, do
+                    not have initial values
+                </p>
+                <p>
+                    Signals: Great for managing application state, have initial
+                    values
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to covert signal to observable",
+        a: (
+            <div>
+                <p>
+                    {`
+                    import { Component } from '@angular/core';
+                    import { toObservable } from "@angular/core/rxjs-interop";
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                    })
+                    export class ButtonComponent implements OnInit{
+                        clickCount = signal(0);
+                        clickCount$ = toObservable(clickCount);
+
+                        ngOnInit(): void {
+                            this.clickCount$.subscribe({
+                                next: (val)=>{console.log(val);}
+                            });
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to covert objservale to signal",
+        a: (
+            <div>
+                <p>
+                    {`
+                    import { Component } from '@angular/core';
+                    import { toObservable, toSignal } from "@angular/core/rxjs-interop";
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                    })
+                    export class ButtonComponent{
+                        interval$ = interval(1000);
+                        intervalSignal = toSignal(this.interval$, {initalValue: 0});
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to create custom Obervable",
+        a: (
+            <div>
+                <p>
+                    {`
+                    import { Component } from '@angular/core';
+                    import { Observable } from "rxjs";
+
+                    @Component({
+                        selector: 'button[appButton], a[appButton]',
+                        templateUrl: './user.component.html',
+                    })
+                    export class ButtonComponent implements OnInit{
+                        customInterval$ = new Observable((subscriber)=>{
+                            let timesExecuted = 0;
+
+                            const interval = setInterval(()=>{
+                                if(timesExecuted > 3) {
+                                    clearInterval(interval);
+                                    subscriber.complete();
+                                    return;
+                                }
+                                console.log('Emitting new value...');
+                                subscriber.next({ message: 'New value'});
+                                timesExecuted++;
+                            }, 2000);
+                        });
+
+                        ngOnInit(): void {
+                            this.customInterval$.subscribe({
+                                next: (val) => { console.log(val); }
+                                complete: () => { console.log('COMPLETED'); }
+                            });
+                        }
+                    }
+                    `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
 ];

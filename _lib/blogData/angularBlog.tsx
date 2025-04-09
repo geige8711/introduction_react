@@ -1927,4 +1927,129 @@ export const angular: BlogQuestionItem[] = [
         ),
         r: "self summary",
     },
+    {
+        q: "how to make http request",
+        a: (
+            <div>
+                <p>1. import provideHttpClient</p>
+                <p>
+                    {`
+                import { bootstrapApplication } from '@angular/platform-browser';
+                import { provideHttpClient } from '@angular/common/http';
+                import { AppComponent } from './app/app.component';
+
+                bootstrapApplication(AppComponent, { providers: [provideHttpClient()] })
+                .catch((err) => console.error(err));
+                `}
+                </p>
+                <p>2. make http request in service</p>
+                {`
+                import { HttpClient } from '@angular/common/http';
+                import { inject, signal } from '@angular/core';
+                import { catchError, throwError } from 'rxjs';
+
+                @Injectable({
+                providedIn: 'root'
+                })
+                export class PlacesService {
+                    private httpClient = inject(HttpClient);
+                    private userPlaces = signal<Place[]>([]);
+
+                    loadedUserPlaces = this.userPlaces.asReadonly();
+
+                    addPlaceToUserPlaces(place: Place){
+                        const prevPlaces = this.userPlaces();
+                        if(!prevPlaces.some(p=>p.id===place.id)){
+                            this.userPlaces.set([...prePlaces, place]);
+                        }
+
+                        return this.httpClient.put('http://localhost:3000/user-places',{
+                            placeId: place.id,
+                        })
+                        .pipe(
+                            catchError(error=>{
+                                this.userPlaces.set(prevPlaces);
+                                return throwError(()=>new Error('Failed to store selected place.'));
+                            })
+                        );
+                    }
+                }
+                `}
+                <p>3. manage loading state in component.ts</p>
+                {`
+                export class AvailablePlacesComponent implements OnInit {
+                    isFetching = signal(false);
+                    private destroyRef = inject(DestroyRef);
+                    private placesService = inject(PlacesService);
+                    error = signal('');
+
+                    ngOnInit() {
+                        this.isFetching.set(true);
+                        const subscription = this.placesService.loadUserPlaces().subscribe(
+                            error: (error: Error) => {
+                                this.error.set(error.message);
+                            }
+                            complete: () => {
+                                this.isFetching.set(false);
+                            }
+                        );
+
+                        this.destroyRef.onDestroy(()=>{
+                            subscription.unsubscribe();
+                        });
+                    }
+
+                    onSelectPlace(selectedPlace: Place){
+                        const subscription = this.placesService.addPlaceToUserPlaces(selectedPlace).subscribe();
+
+                        this.destroyRef.onDestroy(()=>{
+                            subscription.unsubscribe();
+                        });
+                    }
+                }
+                `}
+            </div>
+        ),
+        r: "self summary",
+    },
+    {
+        q: "how to create HTTP interceptor",
+        a: (
+            <div>
+                <p>1. use Angular CLI to generate interceptor</p>
+                <p>
+                    {`
+                    ng generate interceptor _interceptors/loading
+                    `}
+                </p>
+                <p>
+                    {`
+                        import { HttpInterceptorFn } from '@angular/common/http';
+
+                        export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
+                            const request = req.clone({
+                                headers: req.headers.set('X_DEBUG', 'TESTING')
+                            });
+
+                            return next(request);
+                        };
+                    `}
+                </p>
+                <p>2. add this interceptor function in the providers</p>
+                <p>
+                    {`
+                import { bootstrapApplication } from '@angular/platform-browser';
+                import { provideHttpClient, withInterceptors } from '@angular/common/http';
+                import { AppComponent } from './app/app.component';
+
+                bootstrapApplication(AppComponent, { providers: [
+                    provideHttpClient(withInterceptors([loadingInterceptor]))
+                ] })
+                .catch((err) => console.error(err));
+                `}
+                </p>
+            </div>
+        ),
+        r: "self summary",
+    },
 ];
